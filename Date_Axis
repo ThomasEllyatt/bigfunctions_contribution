@@ -1,0 +1,32 @@
+/*
+This Table-Valued Function (TVF) will return a table of dates, along with week, month and quarter start and end dates for the date in question.
+When working with time-series data, you may find a date which has no data and therefore will not exist in your results. 
+
+In some situations its important to see those dates. For example, if you were to create an anomoly report which 
+shows how many events are imported into your table by day, then a day with no data may be silently hidden.
+*/
+
+CREATE OR REPLACE TABLE FUNCTION `spreadsheep-20220603.Case_Studies.date_generator`
+(START_DATE STRING, END_DATE STRING, TIME_INTERVAL INT64)
+AS 
+(
+  SELECT 
+  FORMAT_DATE ("%a", DATES) AS day_of_week,
+  DATES,
+  DATE_TRUNC(DATES,WEEK(MONDAY)) AS WEEK_START,
+  DATE_TRUNC(DATES,WEEK(MONDAY))+6 AS WEEK_END,
+  DATE_TRUNC(DATES,MONTH) AS MONTH_START,
+  DATE_ADD(DATE_TRUNC(DATES,MONTH),INTERVAL 1 MONTH)-1 AS MONTH_END,
+  DATE_TRUNC(DATES,QUARTER) AS QUARTER_START,
+  DATE_ADD(DATE_TRUNC(DATES,QUARTER),INTERVAL 1 QUARTER)-1 AS QUARTER_END,
+  FROM
+  UNNEST
+  (
+    GENERATE_DATE_ARRAY
+    (
+      CAST(START_DATE AS DATE),
+      CAST(END_DATE AS DATE),
+      INTERVAL TIME_INTERVAL DAY
+    )
+  ) AS DATES
+);
