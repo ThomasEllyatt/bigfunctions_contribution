@@ -1,0 +1,46 @@
+/*
+Presenting the percentage difference between two numbers or percentages is a common task. 
+This function will provide your chosen difference in a more user-friendly manner.
+*/
+
+CREATE TEMP FUNCTION percent_diff
+(
+  first_number FLOAT64, 
+  second_number FLOAT64, 
+  nb_decimals INT64, 
+  setting STRING --Enter either 'percentage_point' or 'percentage_difference'
+)
+RETURNS STRING
+AS
+(
+CASE 
+    WHEN SETTING = "percentage_point"
+    THEN 
+      IF
+      (
+        ROUND(((first_number-second_number)*100),nb_decimals) > 0,
+        "+"||ROUND(((first_number-second_number)*100),nb_decimals)|| "pp",
+        ROUND(((first_number-second_number)*100),nb_decimals)|| "pp"
+      )
+    WHEN SETTING = "percentage_difference"
+    THEN
+      IF
+      (
+        ROUND(IEEE_DIVIDE((first_number-second_number),second_number)*100,nb_decimals) > 0,
+        "+"||ROUND(IEEE_DIVIDE((first_number-second_number),second_number)*100,nb_decimals)|| "%",
+        ROUND(IEEE_DIVIDE((first_number-second_number),second_number)*100,nb_decimals)|| "%"
+      )
+    ELSE
+      "Invalid Setting"
+  END
+);
+
+SELECT percent_diff(0.5,0.25,2,"percentage_point") AS clean_difference
+UNION ALL
+SELECT percent_diff(0.25,0.5,2,"percentage_point")
+UNION ALL
+SELECT percent_diff(0.7254,0.112345,2,"percentage_point")
+UNION ALL
+SELECT percent_diff(150,325,1,"percentage_difference")
+UNION ALL
+SELECT percent_diff(612,325,0,"percentage_difference")
