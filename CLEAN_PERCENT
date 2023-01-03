@@ -3,7 +3,7 @@ When you need a percentage presented in a more user-friendly format, You can use
 to handle a safe divide of the two numbers as well as your desired level of rounding.
 */
 
-CREATE TEMP FUNCTION Clean_Percent(first_number FLOAT64, second_number FLOAT64, nb_decimals INT64)
+CREATE TEMP FUNCTION clean_percent(first_number FLOAT64, second_number FLOAT64, nb_decimals INT64)
 RETURNS STRING
 AS
 (
@@ -14,8 +14,8 @@ AS
   || "%"
 );
 
-SELECT 50 AS first_number, 120 AS second_number, 2 AS nb_decimals, IEEE_DIVIDE(50,120) AS ORIGINAL, Clean_Percent(50,120,1) AS PERCENTAGE_CLEAN
+SELECT 50 AS first_number, 120 AS second_number, 2 AS nb_decimals, IEEE_DIVIDE(50,120) AS ORIGINAL, clean_percent(50,120,1) AS PERCENTAGE_CLEAN
 UNION ALL
-SELECT 50 AS first_number, 0 AS second_number, 2 AS nb_decimals, IEEE_DIVIDE(50,0) AS ORIGINAL, Clean_Percent(50,0,1) AS PERCENTAGE_CLEAN
+SELECT 50 AS first_number, 0 AS second_number, 2 AS nb_decimals, IEEE_DIVIDE(50,0) AS ORIGINAL, clean_percent(50,0,1) AS PERCENTAGE_CLEAN
 UNION ALL
-SELECT 50 AS first_number, 223 AS second_number, 0 AS nb_decimals, IEEE_DIVIDE(50,223) AS ORIGINAL, Clean_Percent(50,223,0) AS PERCENTAGE_CLEAN
+SELECT 50 AS first_number, 223 AS second_number, 0 AS nb_decimals, IEEE_DIVIDE(50,223) AS ORIGINAL, clean_percent(50,223,0) AS PERCENTAGE_CLEAN
